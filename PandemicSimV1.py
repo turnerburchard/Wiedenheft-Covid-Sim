@@ -14,7 +14,7 @@
 import numpy as np
 import random
 
-def PanSim(temp):
+def PanSim():
     GoodFit = 0
     R2D2Best = 1e9
     
@@ -42,6 +42,7 @@ def PanSim(temp):
         CellOne = America[1]
 
         CellOne[1,1,0] = 1
+        
         CellOne[1,1,1] = 1
         America[1] = CellOne
 
@@ -52,6 +53,7 @@ def PanSim(temp):
         CellThree = America[4]
         CellThree[1,2,0] = 1
         America[4] = CellThree
+        
         
         rngMax = 1e6
         Contagious = 1.5*2.314497e-16
@@ -76,12 +78,108 @@ def PanSim(temp):
             ECOunt = 0
             if day > 1:
                 QVol[day] = QVol[day - 1]
-                Qgb[day] = Qgb[day-1]0 
+                Qgb[day] = Qgb[day-1] 
+            while DailyDiff > 10:
+                 
+                 #Maybe there should be more here? lots of comments
+                print('Day ' + str(day))
+
+                InterdIdt = np.zeros(1)
+                IntradIdt = np.zeros(1)
+
+                for k1 in (0, k1Max):
+                    for k2 in (0, k2Max):
+                        InterStack = America[k1][k2] # I do not know
+                        InterMatInf = InterStack[:][:][0] #What is this supposed to do?
+                        InterMatRec = InterStack[:][:][1]
+
+                        GateOne = [i for i in InterMatInf if i == 1]
+
+                        GateTwo = [i for i in InterMatRec if i>=2]
+
+                        SumInf = 0
+                        for i in range(len(GateOne)):
+                            if GateOne[i] == 1 and GateTwo[i] == 1:
+                                SumInf += 1
+                        
+                        FracInf = SumInf/len(InterMatInf)
+
+
+                        if SumInf > 0:
+                            for i in range(-1, 1): #is this right?
+                                for j in range(-1, 1):
+                                    if day <651:
+                                        T[day] = 2850 
+                                    
+                                    InterExpAtt += 1
+                                    if (FracInf > Threshold) and (1/(1 - FracInf)*np.exp(-Qgb(day)/(R*T(day))) > gbContagious):
+                                        InterEx += 1
+                                        dx = i
+                                        dy = j
+                                        if (k1 + dx) > k1Max or (k1 + dx) == 0:
+                                            dx = 0
+                                        if (k2 + dy) > k2Max or (k2 + dy) == 0:
+                                            dy = 0
+
+                                        if (abs(dx) + abs(dy)) == 1:
+                                            Enya = CloseVal
+                                        elif (abs(dx) + abs(dy)) == 2:
+                                            Enya = FarVal
+
+                                            if random.randint(1, Enya) == random.randint(1, Enya):
+                                                InterTrans += 1
+                                                NeighborStack = America[k1+dx][k2+dy] # this part will be messy,  need indexing context
+                                                NeighborMat = NeighborStack[:,:,0]
+                                                NeighborRec = NeighborStack[:,:,1]
+
+                                                NeiShape = np.shape(Neighbormat)
+
+                                                NeiX = random.randint(1, NeiShape[0])
+                                                NeiY = random.randint(1, NeiShape[1])
+
+                                                if NeighborMat[NeiX][NeiY] == 0:
+                                                    NeighborMat[NeiX][NeiY] = 1
+                                                    NeighborRec[NeiX][NeiY] = 1
+
+                                                    InterdIdt += 1
+
+                                                    NeighborStack[:,:,0] = NeighborMat
+                                                    NeighborStack[:,:,1] = NeighborRecAmerica[k1+dx][k2+dy] = NeighborStack
+
+                for k in range(len(America)):
+
+                    TheMatrix = America[k]
+                    CelldIdt = 0
+                    DisMat = TheMatrix[:,:,0]
+
+                    if DisMat == 1:
+                        SumOne = DisMat  
+
+                    if SumOne > 0:
+                        Col, Row = np.shape(TheMatrix[:,:,0])[0], np.shape(TheMatrix[:,:,0])[1]
+
+                        for i in range(Col):
+                            for j in range(Row):
+
+                                if TheMatrix[i][j][0] == 1:
+                                    TheMatrix[i][j][1] += 1
+
+                                    if TheMatrix[i][j][1] > ConTime:
+                                        TheMatrix[i][j[]0] = 2
+                                    
+                        CellStart = sum
+
+
+
+
+
+                        
+
 
         GoodFit = 1
 
 
 def main():
-    PanSim("init")
+    PanSim()
 
 main()
