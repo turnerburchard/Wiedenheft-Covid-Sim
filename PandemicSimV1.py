@@ -156,7 +156,7 @@ def PanSim():
                         SumOne = DisMat  
 
                     if SumOne > 0:
-                        Col, Row = np.shape(TheMatrix[:,:,0])[0], np.shape(TheMatrix[:,:,0])[1]
+                        Col, Row = np.shape(TheMatrix[:,:,0])
 
                         for i in range(Col):
                             for j in range(Row):
@@ -165,9 +165,62 @@ def PanSim():
                                     TheMatrix[i][j][1] += 1
 
                                     if TheMatrix[i][j][1] > ConTime:
-                                        TheMatrix[i][j[]0] = 2
+                                        TheMatrix[i][j][0] = 2
                                     
-                        CellStart = sum
+                        CellStart = sum([ii for ii in TheMatrix[:,:,0] if ii == 1])
+
+                        Rho = SumOne/len(TheMatrix[:,:,0])
+
+                        if CellStart >= round(np.size(TheMatrix[:,:,0])/2):
+                            nEnd = np.size(TheMatrix[:,:,0])
+                        else:
+                            nEnd = 2*CellStart
+                        
+                        for n in range(nEnd):
+                            IntraExpAtt += 1
+                            xInf = random.randint(0,Row) #should this be 0 or 1?
+                            yInf = randi(0,Col) #again
+
+                            if DisMat[xInf][yInf] == 0:
+                                DisMat[Xinf][yInf] = 1
+                                IntradIdt += 1
+                                CelldIdt += 1
+
+                if CelldIdt > 2*CellStart:
+                    print('Too many infections')
+
+            dIdt = InterdIdt + IntradIdt
+
+            if dIdt > 0:
+                TheMatrix[:][:][0] = DisMat      
+                America[k] = TheMatrix
+
+        dIdt = InterIdt + IntradIdt #unnecessary?
+
+        DayVec[day] = day
+        InterdIdtVec[day] = InterdIdt
+        IntradIdtVec[day] = IntradIdt
+        dIdtVec[day] = dIdt
+
+
+        if day > 7:
+            dIdt7 = np.mean(dIdtVec[day-7:day])
+            DailyDiff = abs(dIdt7 - didt7Data[day])
+
+            if DailyDiff > 10:
+                ECount += 1
+
+                if ECount < 16:
+
+                    if dIdt7 > didt7Data(day):
+
+                        if np.sum(dIdtVec) < 215:
+                            QVol[day] = 1.0125*QVol[day]
+                        else:
+                            QVol[day] = 1.0125*QVol[day]
+                            Qgb[day] = 1.0125*Qgb[day]
+
+
 
 
 
