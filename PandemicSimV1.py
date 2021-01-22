@@ -28,16 +28,21 @@ def PanSim():
         k1Max = 76
         k2Max = 76
 
-        America = []
+        America = np.empty([k1Max, k2Max])
+
+        America = list(America)
         
-        for i in range(k1Max * k2Max):
+        for i in range(len(America)):
             nSize = random.randint(5, 10)
             Row = np.zeros([nSize,nSize,2])
-            America.append(Row)
+            #America.append(Row)
+            #np.append(America, Row)
+            America[i] = Row
             
             nIndividuals = nIndividuals + nSize*nSize
 
         print('Number of People in Simulation: ' + str(nIndividuals))
+
 
         CellOne = America[1]
 
@@ -75,7 +80,7 @@ def PanSim():
 
         for day in range(0, nDays):
             DailyDiff = 100
-            ECOunt = 0
+            ECount = 0
             if day > 1:
                 QVol[day] = QVol[day - 1]
                 Qgb[day] = Qgb[day-1] 
@@ -89,9 +94,11 @@ def PanSim():
 
                 for k1 in (0, k1Max):
                     for k2 in (0, k2Max):
-                        InterStack = America[k1][k2] # I do not know
-                        InterMatInf = InterStack[:][:][0] #What is this supposed to do?
-                        InterMatRec = InterStack[:][:][1]
+                        InterStack = America[k1-1][k2-1] # Real possible off-by-one error here
+                        InterMatInf = InterStack[:,:,0] 
+                        InterMatRec = InterStack[:,:,1]
+                        #My America doesn't have enough dimensions to index this? 
+                        #I think it would require a 5-dimensional array
 
                         GateOne = [i for i in InterMatInf if i == 1]
 
@@ -132,7 +139,7 @@ def PanSim():
                                                 NeighborMat = NeighborStack[:,:,0]
                                                 NeighborRec = NeighborStack[:,:,1]
 
-                                                NeiShape = np.shape(Neighbormat)
+                                                NeiShape = np.shape(NeighborMat)
 
                                                 NeiX = random.randint(1, NeiShape[0])
                                                 NeiY = random.randint(1, NeiShape[1])
@@ -144,7 +151,8 @@ def PanSim():
                                                     InterdIdt += 1
 
                                                     NeighborStack[:,:,0] = NeighborMat
-                                                    NeighborStack[:,:,1] = NeighborRecAmerica[k1+dx][k2+dy] = NeighborStack
+                                                    NeighborStack[:,:,1] = NeighborRec
+                                                    America[k1+dx][k2+dy] = NeighborStack
 
                 for k in range(len(America)):
 
@@ -179,10 +187,10 @@ def PanSim():
                         for n in range(nEnd):
                             IntraExpAtt += 1
                             xInf = random.randint(0,Row) #should this be 0 or 1?
-                            yInf = randi(0,Col) #again
+                            yInf = random.randint(0,Col) #again
 
                             if DisMat[xInf][yInf] == 0:
-                                DisMat[Xinf][yInf] = 1
+                                DisMat[xInf][yInf] = 1
                                 IntradIdt += 1
                                 CelldIdt += 1
 
@@ -195,7 +203,7 @@ def PanSim():
                 TheMatrix[:][:][0] = DisMat      
                 America[k] = TheMatrix
 
-        dIdt = InterIdt + IntradIdt #unnecessary?
+        dIdt = InterdIdt + IntradIdt 
 
         DayVec[day] = day
         InterdIdtVec[day] = InterdIdt
@@ -205,7 +213,7 @@ def PanSim():
 
         if day > 7:
             dIdt7 = np.mean(dIdtVec[day-7:day])
-            DailyDiff = abs(dIdt7 - didt7Data[day])
+            DailyDiff = abs(dIdt7 - didt7Data[day]) #didt7Data is not defined before here?
 
             if DailyDiff > 10:
                 ECount += 1
@@ -219,6 +227,56 @@ def PanSim():
                         else:
                             QVol[day] = 1.0125*QVol[day]
                             Qgb[day] = 1.0125*Qgb[day]
+                        
+                        if ECount > 3:
+                            print("Threshold too low: Increasing Threshold\n")
+                            Threshold = 1.01*Threshold
+                            if ECount > 7:
+                                CellOdds +- 1
+                                print('Cell Contagiousness Decreased\n')
+                        
+                    elif dIdt7 < didt7Data[day]:
+                        if sum(dIdtVec) < 215:
+                            QVol[day] = 0.9875*QVol[day]
+                        else:
+                            QVol[day] = 0.9875*QVol[day]
+                            Qgb[day] = 0.9875*Qgb[day]
+                        
+                        if ECount > 3:
+                            print('Threshold too high: Decreasing Threshold\n')
+
+                            Threshold = 0.99*Threshold
+
+                            if ECount > 7:
+                                CellOdds -= 1
+                                print('Cell Contagiousness Increased\n')
+                    
+                    if CellOdds < 1:
+                        CellOdds = 1
+                    
+                else:
+                    QVol[day] = QVol[day-1] #Need to be careful with indexing errors here?
+                    Qgb[day] = Qgb[day -1]
+                    print('Energy change too extreme\n')
+                    DailyDiff = 5
+        else:
+            DailyDiff = 5
+
+        GoodFit = 1 #temporary way to exit the initial while loop
+
+    dIdt7Sim = np.zeros([len(dIdtVec)-7,1])
+    for n in range(7, len(dIdtVec)): #off by one error?
+        dIdt7Sim[n-7] = np.mean(dIdtVec[n-7:n])
+    
+    SimNum = len(dIdt7Sim)
+
+    if SimNum >= len(didt7Data):
+        SimComp = dIdt7Sim[1:len(didt7Data)]
+
+    #Weird end statements here, not sure that I'm in the correct indentations
+
+                        
+
 
 
 
@@ -229,7 +287,7 @@ def PanSim():
                         
 
 
-        GoodFit = 1
+        
 
 
 def main():
