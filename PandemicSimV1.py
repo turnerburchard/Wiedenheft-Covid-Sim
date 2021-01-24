@@ -264,6 +264,8 @@ def PanSim():
 
         GoodFit = 1 #temporary way to exit the initial while loop
 
+        #Weird end statements here, not sure that I'm in the correct indentations
+
     dIdt7Sim = np.zeros([len(dIdtVec)-7,1])
     for n in range(7, len(dIdtVec)): #off by one error?
         dIdt7Sim[n-7] = np.mean(dIdtVec[n-7:n])
@@ -271,9 +273,19 @@ def PanSim():
     SimNum = len(dIdt7Sim)
 
     if SimNum >= len(didt7Data):
-        SimComp = dIdt7Sim[1:len(didt7Data)]
+        SimComp = dIdt7Sim[0:len(didt7Data)]
+        DataComp = didt7Data
+        R2 = (dIdt7Sim(0:len(didt7Data))-didt7Data)
+        R2D2 = R2*R2
+    elif SimNum < len(didt7Data):
+        SimComp = dIdt7Sim
+        DataComp = didt7Data(1:SimNum)
+        R2 = (didt7Sim - DataComp)
+        R2D2 = R2*R2
+    
+    
 
-    #Weird end statements here, not sure that I'm in the correct indentations
+
 
                         
 
